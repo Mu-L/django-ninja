@@ -18,10 +18,23 @@ __all__ = [
     "is_async",
 ]
 
+if version_info >= (3, 14):
+    import annotationlib
+
+    _FORWARDREF_KWARGS: dict[str, Any] = {
+        "annotation_format": annotationlib.Format.FORWARDREF
+    }
+    _STRING_KWARGS: dict[str, Any] = {
+        "annotation_format": annotationlib.Format.STRING
+    }
+else:
+    _FORWARDREF_KWARGS: dict[str, Any] = {}
+    _STRING_KWARGS: dict[str, Any] = {}
+
 
 def get_typed_signature(call: Callable[..., Any]) -> inspect.Signature:
     "Finds call signature and resolves all forwardrefs"
-    signature = inspect.signature(call)
+    signature = inspect.signature(call, **_FORWARDREF_KWARGS)
     globalns = getattr(call, "__globals__", {})
     typed_params = [
         inspect.Parameter(
@@ -66,7 +79,7 @@ def is_async(callable: Callable[..., Any]) -> bool:
 
 
 def has_kwargs(func: Callable[..., Any]) -> bool:
-    for param in inspect.signature(func).parameters.values():
+    for param in inspect.signature(func, **_STRING_KWARGS).parameters.values():
         if param.kind == param.VAR_KEYWORD:
             return True
     return False
@@ -74,7 +87,7 @@ def has_kwargs(func: Callable[..., Any]) -> bool:
 
 def get_args_names(func: Callable[..., Any]) -> List[str]:
     "returns list of function argument names"
-    return list(inspect.signature(func).parameters.keys())
+    return list(inspect.signature(func, **_STRING_KWARGS).parameters.keys())
 
 
 class UUIDStrConverter(UUIDConverter):
