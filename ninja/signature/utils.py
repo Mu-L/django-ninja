@@ -2,7 +2,7 @@ import asyncio
 import inspect
 import re
 from sys import version_info
-from typing import Any, Callable, ForwardRef, List, Set
+from typing import Any, Callable, Dict, ForwardRef, List, Set
 
 from django.urls import register_converter
 from django.urls.converters import UUIDConverter
@@ -21,15 +21,15 @@ __all__ = [
 if version_info >= (3, 14):
     import annotationlib
 
-    _FORWARDREF_KWARGS: dict[str, Any] = {
-        "annotation_format": annotationlib.Format.FORWARDREF
+    _FORWARDREF_KWARGS: Dict[str, Any] = {
+        "annotation_format": annotationlib.Format.FORWARDREF,
     }
-    _STRING_KWARGS: dict[str, Any] = {
-        "annotation_format": annotationlib.Format.STRING
+    _STRING_KWARGS: Dict[str, Any] = {
+        "annotation_format": annotationlib.Format.STRING,
     }
 else:
-    _FORWARDREF_KWARGS: dict[str, Any] = {}
-    _STRING_KWARGS: dict[str, Any] = {}
+    _FORWARDREF_KWARGS: Dict[str, Any] = {}
+    _STRING_KWARGS: Dict[str, Any] = {}
 
 
 def get_typed_signature(call: Callable[..., Any]) -> inspect.Signature:
