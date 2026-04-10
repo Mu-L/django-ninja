@@ -60,3 +60,16 @@ def test_request_context():
         "other": {"value": {"request": "<request>"}, "other": None},
         "value": {"request": "<request>", "response_status": "200"},
     }
+
+
+class ResolveWithSelfReference(Schema):
+    name: str
+
+    @staticmethod
+    def resolve_name(obj) -> ResolveWithSelfReference:
+        return obj.get("name", "default")
+
+
+def test_schema_with_self_referencing_annotation():
+    obj = ResolveWithSelfReference.model_validate({"name": "test"})
+    assert obj.name == "test"
