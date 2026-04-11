@@ -18,18 +18,21 @@ __all__ = [
     "is_async",
 ]
 
-if version_info >= (3, 14):
+_FORWARDREF_KWARGS: Dict[str, Any]
+_STRING_KWARGS: Dict[str, Any]
+
+if version_info >= (3, 14):  # pragma: no cover
     import annotationlib
 
-    _FORWARDREF_KWARGS: Dict[str, Any] = {
+    _FORWARDREF_KWARGS = {
         "annotation_format": annotationlib.Format.FORWARDREF,
     }
-    _STRING_KWARGS: Dict[str, Any] = {
+    _STRING_KWARGS = {
         "annotation_format": annotationlib.Format.STRING,
     }
-else:
-    _FORWARDREF_KWARGS: Dict[str, Any] = {}
-    _STRING_KWARGS: Dict[str, Any] = {}
+else:  # pragma: no cover
+    _FORWARDREF_KWARGS = {}
+    _STRING_KWARGS = {}
 
 
 def get_typed_signature(call: Callable[..., Any]) -> inspect.Signature:
